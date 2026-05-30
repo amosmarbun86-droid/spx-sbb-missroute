@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.rcpdroid.spxsbb" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>SPX SBB Missroute</name>
+    <description>Tools bantu sortir paket missroute wilayah SBB.</description>
+    <author email="amosmarbun86@gmail.com" href="https://github.com/amosmarbun86-droid">Amos</author>
+    
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    
+    <preference name="LogLevel" value="DEBUG" />
+    <preference name="AndroidPersistentFileLocation" value="Internal" />
+    
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <preference name="AutoHideSplashScreen" value="true" />
+        <preference name="SplashScreenDelay" value="2000" />
+    </platform>
+</widget>
