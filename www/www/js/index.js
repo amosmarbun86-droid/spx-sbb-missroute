@@ -3,6 +3,7 @@ document.addEventListener('deviceready', initAplikasi, false);
 let map;
 let markerGroup;
 
+// Database lengkap disesuaikan dari file python asli Anda
 const databaseWilayah = [
     { kode: "1", nama: "Siborong-borong", lat: 2.2076, lon: 98.9916 },
     { kode: "2", nama: "Gunung Meriah", lat: 2.4500, lon: 97.8500 },
