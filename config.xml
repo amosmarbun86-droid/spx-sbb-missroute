@@ -5,6 +5,7 @@
     <author email="amosmarbun86@gmail.com" href="https://github.com/amosmarbun86-droid">Amos</author>
     
     <content src="index.html" />
+    
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -14,6 +15,13 @@
     
     <platform name="android">
         <allow-intent href="market:*" />
+        
+        <allow-navigation href="http://*/*" />
+        <allow-navigation href="https://*/*" />
+        <allow-navigation href="data:*" />
+        
+        <access origin="https://*.tile.openstreetmap.org" />
+        
         <preference name="AutoHideSplashScreen" value="true" />
         <preference name="SplashScreenDelay" value="2000" />
     </platform>
