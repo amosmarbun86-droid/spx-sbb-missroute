@@ -1,0 +1,25 @@
+{
+  "name": "com.rcpdroid.spxsbb",
+  "displayName": "SPX SBB Missroute",
+  "version": "1.0.0",
+  "description": "Aplikasi Pengecekan Missroute Paket SPX SBB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "Amos",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "cordova-android": "^12.0.0"
+  },
+  "cordova": {
+    "plugins": {},
+    "platforms": [
+      "android"
+    ]
+  }
+}
