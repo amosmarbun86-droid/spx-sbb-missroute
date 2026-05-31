@@ -2,10 +2,32 @@ document.addEventListener('deviceready', initAplikasi, false);
 
 let map;
 let markerGroup;
+let databaseWilayah = [];
+let statusAdmin = false;
 
-// Database lengkap disesuaikan dari data asli Anda (75 Wilayah)
-const databaseWilayah = [
-    { kode: "1", nama: "Siborong-borong", lat: 2.2076, lon: 98.9916 },
+// PASSWORD UNTUK MASUK MODE ADMIN
+const PASSWORD_ADMIN = "admin123"; // Silakan ganti sesuai keinginanmu
+
+// KONFIGURASI FIREBASE CLOUD ASLI MILIK AMOS (SINGAPORE SERVER)
+const firebaseConfig = {
+    apiKey: "AIzaSyBJtljHK_PDFakT_jfz6FfXT-adUQW6QeY",
+    authDomain: "spx-sbb-missroute.firebaseapp.com",
+    databaseURL: "https://spx-sbb-missroute-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "spx-sbb-missroute",
+    storageBucket: "spx-sbb-missroute.firebasestorage.app",
+    messagingSenderId: "609035978516",
+    appId: "1:609035978516:web:7d8fdb156fa31a9c04a401"
+};
+
+// Inisialisasi Firebase menggunakan metode global (v8) agar aman di Cordova
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const dbRef = firebase.database().ref('spx_rute');
+
+// Database Master Bawaan Asli (75 Wilayah)
+const databaseDefault = [
+    { kode: "1", nama: "DC SIBORONG-BORONG", lat: 2.2076, lon: 98.9916 }, //
     { kode: "2", nama: "Gunung Meriah", lat: 2.4500, lon: 97.8500 },
     { kode: "3", nama: "Simpang Kiri", lat: 2.3500, lon: 97.8000 },
     { kode: "5", nama: "Penyabungan", lat: 0.8615, lon: 99.5452 },
@@ -25,7 +47,7 @@ const databaseWilayah = [
     { kode: "29", nama: "Padang Sidempuan Tenggara", lat: 1.3800, lon: 99.2700 },
     { kode: "30", nama: "Sayur Matinggi", lat: 1.3000, lon: 99.3500 },
     { kode: "32", nama: "Padang Sidempuan Batunadua", lat: 1.4000, lon: 99.3000 },
-    { kode: "33", nama: "Padang Sidempuan Selatan", lat: 1.3700, lon: 99.2800 },
+    { kode: "33", nama: "Padang Sidempuan Selatan", lat: 1.3770, lon: 99.2800 },
     { kode: "35", nama: "Porsea", lat: 2.5667, lon: 99.0833 },
     { kode: "36", nama: "Pinang Sori", lat: 1.5500, lon: 98.9000 },
     { kode: "37", nama: "Tapian Nauli", lat: 1.6500, lon: 98.8000 },
@@ -83,15 +105,30 @@ const databaseWilayah = [
 ];
 
 function initAplikasi() {
-    // Koordinat tengah untuk wilayah Sumatera Utara SBB
-    map = L.map('mapBox').setView([1.8, 99.0], 8);
-    
+    // Fokus peta default ke DC Siborong-borong
+    map = L.map('mapBox').setView([2.2076, 98.9916], 9);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '© OpenStreetMap'
     }).addTo(map);
-    
     markerGroup = L.layerGroup().addTo(map);
+
+    // REALTIME SERVER LISTENER
+    dbRef.on('value', (snapshot) => {
+        const dataFirebase = snapshot.val();
+        if (dataFirebase) {
+            // Konversi database Firebase (baik berupa objek maupun array) ke lokal array
+            databaseWilayah = Object.values(dataFirebase);
+        } else {
+            // Jika server cloud kosong sama sekali, injeksi database default utama
+            databaseWilayah = [...databaseDefault];
+            dbRef.set(databaseDefault);
+        }
+        document.getElementById('listHasil').innerHTML = '<div class="p-3 text-center text-muted card-info-text">Siap melacak rute paket (Server Cloud Aktif).</div>';
+    }, (error) => {
+        console.error(error);
+        document.getElementById('listHasil').innerHTML = '<div class="p-3 text-center text-danger card-info-text">Gagal sinkronisasi data Cloud!</div>';
+    });
 }
 
 if (!window.cordova) {
@@ -127,30 +164,88 @@ function prosesCari() {
                     <span class="fw-bold d-block text-dark text-capitalize" style="font-size:0.95rem;">${item.nama}</span>
                     <small class="text-muted" style="font-size:0.75rem;">Lat: ${item.lat} | Lon: ${item.lon}</small>
                 </div>
-                <span class="badge badge-kode rounded-pill px-3 py-2">${item.kode}</span>
+                <span class="badge bg-danger rounded-pill px-3 py-2 fw-bold" style="font-size:1rem;">${item.kode}</span>
             </div>
         `;
         listContainer.innerHTML += itemHTML;
 
-        const marker = L.marker([item.lat, item.lon])
-            .bindPopup(`<b>Kode: ${item.kode}</b><br>${item.nama}`);
+        const marker = L.marker([item.lat, item.lon]).bindPopup(`<b>Kode: ${item.kode}</b><br>${item.nama}`);
         markerGroup.addLayer(marker);
     });
 
-    map.setView([hasilFilter[0].lat, hasilFilter[0].lon], 11);
+    if(hasilFilter.length > 0) {
+        map.setView([hasilFilter[0].lat, hasilFilter[0].lon], 11);
+    }
+}
+
+function masukModeAdmin() {
+    const inputPass = prompt("🔑 Masukkan Password Admin:");
+    if (inputPass === PASSWORD_ADMIN) {
+        statusAdmin = true;
+        document.getElementById('formTambahWilayah').style.display = 'block';
+        document.getElementById('btnResetDefault').style.display = 'block';
+        document.getElementById('btnAdminMode').style.none = 'none';
+        document.getElementById('btnAdminMode').style.display = 'none';
+        alert("🔓 Akses Cloud Diterima! Panel admin terbuka.");
+    } else if (inputPass !== null) {
+        alert("❌ Password Salah!");
+    }
+}
+
+function keluarModeAdmin() {
+    statusAdmin = false;
+    document.getElementById('formTambahWilayah').style.display = 'none';
+    document.getElementById('btnResetDefault').style.display = 'none';
+    document.getElementById('btnAdminMode').style.display = 'block';
+    bersihkanCari();
+}
+
+function simpanWilayahBaru() {
+    if (!statusAdmin) return;
+
+    const kode = document.getElementById('newKode').value.trim();
+    const nama = document.getElementById('newNama').value.trim();
+    const lat = parseFloat(document.getElementById('newLat').value);
+    const lon = parseFloat(document.getElementById('newLon').value);
+
+    if (!kode || !nama || isNaN(lat) || isNaN(lon)) {
+        alert("⚠️ Mohon isi semua data dengan benar!");
+        return;
+    }
+
+    // Menggunakan struktur array index/push agar sinkron dengan sistem filter data lokal
+    const indexBaru = databaseWilayah.length;
+    firebase.database().ref('spx_rute/' + indexBaru).set({ kode, nama, lat, lon }, (error) => {
+        if (error) {
+            alert("❌ Gagal menyimpan ke cloud server!");
+        } else {
+            alert(`✅ Server Diperbarui: ${nama} (${kode})`);
+            document.getElementById('newKode').value = "";
+            document.getElementById('newNama').value = "";
+            document.getElementById('newLat').value = "";
+            document.getElementById('newLon').value = "";
+            bersihkanCari();
+        }
+    });
+}
+
+function resetKeDefault() {
+    if (!statusAdmin) return;
+    if (confirm("Kosongkan data tambahan dan kembalikan server ke rute default?")) {
+        dbRef.set(databaseDefault, (error) => {
+            if (!error) alert("🔄 Server Cloud berhasil di-reset!");
+        });
+    }
 }
 
 function geserKeLokasi(lat, lon, kode, nama) {
     map.setView([lat, lon], 14);
-    L.popup()
-        .setLatLng([lat, lon])
-        .setContent(`<b>Kode: ${kode}</b><br>${nama}`)
-        .openOn(map);
+    L.popup().setLatLng([lat, lon]).setContent(`<b>Kode: ${kode}</b><br>${nama}`).openOn(map);
 }
 
 function bersihkanCari() {
     document.getElementById('inputSearch').value = "";
     document.getElementById('listHasil').innerHTML = '<div class="p-3 text-center text-muted card-info-text">Silakan ketik data paket untuk memulai tracking.</div>';
     markerGroup.clearLayers();
-    map.setView([1.8, 99.0], 8);
+    map.setView([2.2076, 98.9916], 9);
 }
