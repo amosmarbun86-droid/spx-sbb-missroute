@@ -27,7 +27,7 @@ const dbRef = firebase.database().ref('spx_rute');
 
 // Database Master Bawaan Asli (75 Wilayah)
 const databaseDefault = [
-    { kode: "1", nama: "DC SIBORONG-BORONG", lat: 2.2076, lon: 98.9916 }, //
+    { kode: "1", nama: "DC SIBORONG-BORONG", lat: 2.2076, lon: 98.9916 }, 
     { kode: "2", nama: "Gunung Meriah", lat: 2.4500, lon: 97.8500 },
     { kode: "3", nama: "Simpang Kiri", lat: 2.3500, lon: 97.8000 },
     { kode: "5", nama: "Penyabungan", lat: 0.8615, lon: 99.5452 },
@@ -105,6 +105,14 @@ const databaseDefault = [
 ];
 
 function initAplikasi() {
+    // 🛠️ SUNTIKAN PERBAIKAN EROR MARKER "MARK" (MENYAMBUNGKAN JALUR ASSET YANG HILANG DI CORDOVA)
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    });
+
     // Fokus peta default ke DC Siborong-borong
     map = L.map('mapBox').setView([2.2076, 98.9916], 9);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
