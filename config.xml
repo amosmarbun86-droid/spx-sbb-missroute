@@ -12,6 +12,11 @@
     
     <preference name="LogLevel" value="DEBUG" />
     <preference name="AndroidPersistentFileLocation" value="Internal" />
+    <preference name="KeepRunning" value="true" />
+    <preference name="AllowInlineMediaPlayback" value="true" />
+
+    <preference name="AndroidInsecureFileModeEnabled" value="true" />
+    <preference name="AndroidScheme" value="http" />
     
     <platform name="android">
         <allow-intent href="market:*" />
@@ -21,6 +26,8 @@
         <allow-navigation href="data:*" />
         
         <access origin="https://*.tile.openstreetmap.org" />
+        <access origin="https://*.firebasedatabase.app" />
+        <allow-navigation href="https://*.firebasedatabase.app/*" />
         
         <preference name="AutoHideSplashScreen" value="true" />
         <preference name="SplashScreenDelay" value="2000" />
