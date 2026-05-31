@@ -13,9 +13,35 @@
     <div class="container-fluid p-0">
         <div class="search-panel mb-2 p-3 bg-white rounded-3 shadow-sm">
             <h6 class="fw-bold text-dark mb-2">📦 SPX SBB Missroute Checker</h6>
-            <div class="input-group">
+            <div class="input-group mb-2">
                 <input type="text" id="inputSearch" class="form-control form-control-lg" placeholder="Masukkan Kode Paket / Nama Wilayah..." oninput="prosesCari()">
                 <button class="btn btn-warning text-white fw-bold" onclick="bersihkanCari()">Clear</button>
+            </div>
+            <button id="btnAdminMode" class="btn btn-sm btn-outline-secondary w-100 fw-bold" onclick="masukModeAdmin()">🔒 Masuk Mode Admin</button>
+        </div>
+
+        <div id="formTambahWilayah" class="bg-white rounded-3 p-3 mb-2 shadow-sm border" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold text-danger m-0">🛠️ Panel Admin (Firebase Cloud)</h6>
+                <button class="btn btn-sm btn-dark py-0 px-2" onclick="keluarModeAdmin()" style="font-size: 0.75rem;">Keluar Admin</button>
+            </div>
+            <hr class="my-2">
+            <div class="mb-2">
+                <input type="text" id="newKode" class="form-control form-control-sm" placeholder="Kode Paket (Contoh: 96)">
+            </div>
+            <div class="mb-2">
+                <input type="text" id="newNama" class="form-control form-control-sm" placeholder="Nama Wilayah (Contoh: Sitiotio)">
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="col">
+                    <input type="number" step="any" id="newLat" class="form-control form-control-sm" placeholder="Latitude">
+                </div>
+                <div class="col">
+                    <input type="number" step="any" id="newLon" class="form-control form-control-sm" placeholder="Longitude">
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-success btn-sm w-100 fw-bold" onclick="simpanWilayahBaru()">Simpan ke Cloud Firebase</button>
             </div>
         </div>
 
@@ -24,14 +50,18 @@
         </div>
 
         <div class="card result-panel shadow-sm border-0">
-            <div class="card-header bg-dark text-white fw-bold py-2" style="font-size: 0.9rem;">
-                📋 Hasil Kecocokan Wilayah Sortir
+            <div class="card-header bg-dark text-white fw-bold py-2 d-flex justify-content-between align-items-center" style="font-size: 0.9rem;">
+                <span>📋 Hasil Kecocokan Wilayah</span>
+                <button id="btnResetDefault" class="btn btn-xs btn-danger py-0 px-2 text-white" onclick="resetKeDefault()" style="font-size: 0.75rem; display: none;">Clear Cloud Data</button>
             </div>
             <div class="list-group list-group-flush" id="listHasil">
-                <div class="p-3 text-center text-muted card-info-text">Silakan ketik data paket untuk memulai tracking.</div>
+                <div class="p-3 text-center text-muted card-info-text">Menghubungkan ke server rute...</div>
             </div>
         </div>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script src="cordova.js"></script>
     <script src="js/leaflet.js"></script>
