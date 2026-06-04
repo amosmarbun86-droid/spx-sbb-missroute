@@ -26,6 +26,15 @@
                 <button class="btn btn-sm btn-dark py-0 px-2" onclick="keluarModeAdmin()" style="font-size: 0.75rem;">Keluar Admin</button>
             </div>
             <hr class="my-2">
+            
+            <div class="mb-3">
+                <label class="small text-muted fw-bold">Cari Nama Lokasi/Alamat:</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="searchMapInput" class="form-control" placeholder="Contoh: Siborong-borong">
+                    <button class="btn btn-primary" onclick="cariLokasiDiPeta()">Cari</button>
+                </div>
+            </div>
+
             <div class="mb-2">
                 <input type="text" id="newKode" class="form-control form-control-sm" placeholder="Kode Paket (Contoh: 96)">
             </div>
@@ -34,10 +43,10 @@
             </div>
             <div class="row g-2 mb-2">
                 <div class="col">
-                    <input type="number" step="any" id="newLat" class="form-control form-control-sm" placeholder="Latitude">
+                    <input type="number" step="any" id="newLat" class="form-control form-control-sm" placeholder="Latitude" readonly>
                 </div>
                 <div class="col">
-                    <input type="number" step="any" id="newLon" class="form-control form-control-sm" placeholder="Longitude">
+                    <input type="number" step="any" id="newLon" class="form-control form-control-sm" placeholder="Longitude" readonly>
                 </div>
             </div>
             <div class="d-flex gap-2">
@@ -62,7 +71,6 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <script src="cordova.js"></script>
     <script src="js/leaflet.js"></script>
     <script src="js/index.js"></script>
